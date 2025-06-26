@@ -36,8 +36,12 @@ news_items = [
 ]
 
 print("Starting pub/sub producer...")
+count = 0
 while True:
     message = f"{random.choice(news_items)} at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
     producer.send(topic_name, {'message': message})
     print(f"Sent: {message}")
     time.sleep(2)
+    count += 1
+    if count >= 10:  # Limit to 10 messages for demonstration
+        break

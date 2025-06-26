@@ -28,5 +28,17 @@ if not consumer:
 
 
 print("Starting pub/sub consumer...")
-for message in consumer:
-    print(f"--> Received: {message.value['message']}")
+timeout_seconds = 10  # Adjust as needed
+start_time = time.time()
+
+while True:
+    msg_pack = consumer.poll(timeout_ms=1000)
+    if msg_pack:
+        for tp, messages in msg_pack.items():
+            for message in messages:
+                print(f"--> Received: {message.value['message']}")
+        start_time = time.time()  # Reset timer on message
+    else:
+        if time.time() - start_time > timeout_seconds:
+            print(f"No messages received in {timeout_seconds} seconds. Exiting consumer loop.")
+            break
